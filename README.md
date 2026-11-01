@@ -1,6 +1,9 @@
 # ImmunoPredict
 
 **An educational machine learning prototype exploring patterns associated with immunotherapy response.**
+## Preview
+
+![ImmunoPredict interface](immunopredict-preview.png)
 
 ## Overview
 
