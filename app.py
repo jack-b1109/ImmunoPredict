@@ -411,21 +411,25 @@ footer {
         font-size: 16px !important;
     }
 
-    /* Keep all tab labels in one horizontally scrollable toolbar */
+    /* Show all three tabs on phones without the three-dot overflow menu */
     .tab-nav {
         display: flex !important;
         flex-wrap: nowrap !important;
+        width: 100% !important;
         max-width: 100% !important;
-        overflow-x: auto !important;
-        overflow-y: hidden !important;
-        white-space: nowrap !important;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: thin;
+        overflow: visible !important;
+        gap: 4px !important;
     }
     .tab-nav button {
-        flex: 0 0 auto !important;
-        min-width: max-content !important;
-        white-space: nowrap !important;
+        flex: 1 1 0 !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        padding: 9px 5px !important;
+        font-size: 11px !important;
+        line-height: 1.25 !important;
+        white-space: normal !important;
+        overflow-wrap: anywhere !important;
+        text-align: center !important;
     }
 }
 """
