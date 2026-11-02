@@ -310,11 +310,14 @@ h1, h2, h3 {
     border-radius: 10px;
 }
 
+/* Threshold information: cool blue palette for clear contrast */
 .threshold-note {
-    background: #F0F4F0;
-    border-left: 3px solid #638575;
+    background: #EAF2F8;
+    border: 1px solid #C9DCEB;
+    border-left: 4px solid #477A9E;
     border-radius: 8px;
     padding: 14px 16px;
+    color: #183344;
     font-size: 13px;
     line-height: 1.6;
 }
@@ -324,13 +327,14 @@ h1, h2, h3 {
     color: var(--muted);
 }
 
+/* Disclaimer: neutral slate palette, visually distinct from the threshold box */
 .disclaimer {
-    background: #F8F3E9;
-    border: 1px solid #E9DFCA;
+    background: #F1F3F5;
+    border: 1px solid #D7DEE5;
     border-radius: 10px;
     padding: 14px;
     margin-top: 17px;
-    color: #695C43;
+    color: #34495E;
     font-size: 12px;
     line-height: 1.6;
 }
@@ -349,14 +353,67 @@ footer {
 }
 
 @media (max-width: 650px) {
+    /* Use the available screen width and prevent sideways scrolling */
+    .gradio-container {
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+        max-width: 100% !important;
+        overflow-x: hidden !important;
+    }
+
+    /* Stack Gradio columns vertically on narrow screens */
+    .gradio-container .row {
+        flex-wrap: wrap !important;
+        gap: 12px !important;
+    }
+    .gradio-container .row > .column {
+        flex: 1 1 100% !important;
+        min-width: 100% !important;
+        width: 100% !important;
+    }
+
     #hero {
-        padding: 28px 23px;
+        padding: 26px 20px;
+        margin-left: 0;
+        margin-right: 0;
+        border-radius: 16px;
     }
     #hero h1 {
-        font-size: 33px;
+        font-size: clamp(28px, 8vw, 33px);
+    }
+    #hero p {
+        font-size: 14px;
+    }
+
+    .section-heading {
+        font-size: 22px;
+    }
+
+    .result-panel {
+        padding: 18px;
+    }
+    .result-heading {
+        font-size: 26px;
     }
     .probability-grid {
         grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    /* Make controls easier to tap */
+    .gradio-container button {
+        min-height: 44px !important;
+    }
+    .gradio-container input,
+    .gradio-container textarea {
+        font-size: 16px !important;
+    }
+
+    /* Keep tab labels usable on smaller screens */
+    .tab-nav {
+        max-width: 100%;
+        overflow-x: auto !important;
+        flex-wrap: nowrap !important;
     }
 }
 """
