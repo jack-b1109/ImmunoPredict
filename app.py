@@ -361,15 +361,17 @@ footer {
         overflow-x: hidden !important;
     }
 
-    /* Stack Gradio columns vertically on narrow screens */
-    .gradio-container .row {
-        flex-wrap: wrap !important;
+    /* Stack only the three overview cards; keep other layouts compact */
+    #overview-cards {
+        display: flex !important;
+        flex-direction: column !important;
+        flex-wrap: nowrap !important;
         gap: 12px !important;
     }
-    .gradio-container .row > .column {
-        flex: 1 1 100% !important;
-        min-width: 100% !important;
+    #overview-cards > * {
         width: 100% !important;
+        min-width: 0 !important;
+        flex: 0 0 auto !important;
     }
 
     #hero {
@@ -409,11 +411,21 @@ footer {
         font-size: 16px !important;
     }
 
-    /* Keep tab labels usable on smaller screens */
+    /* Keep all tab labels in one horizontally scrollable toolbar */
     .tab-nav {
-        max-width: 100%;
-        overflow-x: auto !important;
+        display: flex !important;
         flex-wrap: nowrap !important;
+        max-width: 100% !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+        white-space: nowrap !important;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+    }
+    .tab-nav button {
+        flex: 0 0 auto !important;
+        min-width: max-content !important;
+        white-space: nowrap !important;
     }
 }
 """
@@ -459,7 +471,7 @@ with gr.Blocks(
             </div>
             """)
 
-            with gr.Row():
+            with gr.Row(elem_id="overview-cards"):
 
                 gr.HTML("""
                 <div class="info-card">
