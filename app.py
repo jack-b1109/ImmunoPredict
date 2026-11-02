@@ -411,42 +411,26 @@ footer {
         font-size: 16px !important;
     }
 
-    /* Keep every tab in one horizontally scrollable navigation strip.
-       Gradio can hide tabs in its overflow menu on narrow screens, so
-       explicitly show the tab buttons and hide that menu control. */
-    #main-tabs .tab-nav {
+    /* Three custom navigation buttons always share the phone width. */
+    #section-nav {
         display: flex !important;
+        flex-direction: row !important;
         flex-wrap: nowrap !important;
-        justify-content: flex-start !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        overflow-x: auto !important;
-        overflow-y: hidden !important;
-        white-space: nowrap !important;
         gap: 6px !important;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: thin;
+        width: 100% !important;
     }
-    #main-tabs .tab-nav button,
-    #main-tabs .tab-nav button[hidden],
-    #main-tabs .tab-nav button[style*="display: none"] {
-        display: inline-flex !important;
-        flex: 0 0 auto !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        width: auto !important;
-        min-width: max-content !important;
-        max-width: none !important;
-        padding: 9px 10px !important;
-        font-size: 12px !important;
+    #section-nav button {
+        flex: 1 1 0 !important;
+        min-width: 0 !important;
+        width: 0 !important;
+        padding: 9px 4px !important;
+        font-size: 10px !important;
         line-height: 1.25 !important;
-        white-space: nowrap !important;
+        white-space: normal !important;
+        overflow-wrap: anywhere !important;
+        text-align: center !important;
     }
-    #main-tabs .tab-nav .overflow-menu,
-    #main-tabs .tab-nav [aria-label*="More"],
-    #main-tabs .tab-nav [aria-label*="more"] {
-        display: none !important;
-    }
+
 }
 """
 
@@ -478,260 +462,282 @@ with gr.Blocks(
     </div>
     """)
 
-    with gr.Tabs(elem_id="main-tabs"):
+    # Custom navigation buttons avoid Gradio's mobile tab overflow menu.
+    with gr.Row(elem_id="section-nav"):
+        overview_button = gr.Button("Overview", variant="primary", scale=1, size="sm")
+        explore_button = gr.Button("Explore the model", variant="secondary", scale=1, size="sm")
+        research_button = gr.Button("Research & methodology", variant="secondary", scale=1, size="sm")
 
-        with gr.Tab("Overview"):
+    overview_panel = gr.Column(visible=True, elem_id="panel-overview")
+    with overview_panel:
+
+
+        gr.HTML("""
+        <div class="section-heading">Understanding the project</div>
+        <div class="section-subtitle">
+            ImmunoPredict is an interactive demonstration of how
+            clinical and biological variables can be used in a
+            machine learning classification model.
+        </div>
+        """)
+
+        with gr.Row(elem_id="overview-cards"):
 
             gr.HTML("""
-            <div class="section-heading">Understanding the project</div>
-            <div class="section-subtitle">
-                ImmunoPredict is an interactive demonstration of how
-                clinical and biological variables can be used in a
-                machine learning classification model.
+            <div class="info-card">
+                <h3>The challenge</h3>
+                <p>
+                    Patients can respond differently to immune
+                    checkpoint blockade. Identifying patterns
+                    associated with response is an important area
+                    of ongoing cancer research.
+                </p>
             </div>
             """)
 
-            with gr.Row(elem_id="overview-cards"):
-
-                gr.HTML("""
-                <div class="info-card">
-                    <h3>The challenge</h3>
-                    <p>
-                        Patients can respond differently to immune
-                        checkpoint blockade. Identifying patterns
-                        associated with response is an important area
-                        of ongoing cancer research.
-                    </p>
-                </div>
-                """)
-
-                gr.HTML("""
-                <div class="info-card">
-                    <h3>The approach</h3>
-                    <p>
-                        A logistic regression model was trained on
-                        published research data, using biological,
-                        clinical and cancer-type variables.
-                    </p>
-                </div>
-                """)
-
-                gr.HTML("""
-                <div class="info-card">
-                    <h3>The objective</h3>
-                    <p>
-                        To demonstrate how machine learning can
-                        explore relationships in research datasets
-                        and produce interpretable classification outputs.
-                    </p>
-                </div>
-                """)
-
-            gr.Markdown("""
-            ### Explore the model
-
-            The predictor allows you to enter example values for five
-            research variables and a cancer type. It then displays the
-            model's estimated probabilities for the two outcome classes.
-
-            **This is a research demonstration, not a medical decision tool.**
-            """)
-
-        with gr.Tab("Explore the model"):
-
             gr.HTML("""
-            <div class="section-heading">Explore a prediction</div>
-            <div class="section-subtitle">
-                Enter example values below to see how the trained model
-                classifies a sample. The descriptions explain each variable.
+            <div class="info-card">
+                <h3>The approach</h3>
+                <p>
+                    A logistic regression model was trained on
+                    published research data, using biological,
+                    clinical and cancer-type variables.
+                </p>
             </div>
             """)
 
-            with gr.Row():
-
-                with gr.Column():
-
-                    tmb = gr.Number(
-                        label="Tumour mutational burden (TMB)",
-                        value=32.5
-                    )
-                    gr.HTML("""
-                    <div class="input-description">
-                        The number of mutations per megabase of tumour DNA.
-                        TMB is studied as a possible indicator of how visible
-                        a tumour may be to the immune system.
-                    </div>
-                    """)
-
-                    therapy = gr.Radio(
-                        choices=[
-                            ("Yes — previous systemic therapy", 1),
-                            ("No — no previous systemic therapy", 0)
-                        ],
-                        label="Previous systemic therapy",
-                        value=1
-                    )
-                    gr.HTML("""
-                    <div class="input-description">
-                        Indicates whether the patient had received previous
-                        systemic cancer treatment. This can include different
-                        types of drug-based treatment.
-                    </div>
-                    """)
-
-                    albumin = gr.Number(
-                        label="Albumin (g/dL)",
-                        value=4.3
-                    )
-                    gr.HTML("""
-                    <div class="input-description">
-                        Albumin is a protein found in blood plasma. Its level
-                        can be associated with general health and inflammation.
-                    </div>
-                    """)
-
-                with gr.Column():
-
-                    nlr = gr.Number(
-                        label="Neutrophil-to-lymphocyte ratio (NLR)",
-                        value=1.19
-                    )
-                    gr.HTML("""
-                    <div class="input-description">
-                        The ratio of two types of white blood cells.
-                        NLR is studied as a possible marker of systemic
-                        inflammation and immune activity.
-                    </div>
-                    """)
-
-                    age = gr.Number(
-                        label="Age (years)",
-                        value=67.9
-                    )
-                    gr.HTML("""
-                    <div class="input-description">
-                        Age of the example patient, expressed in years.
-                    </div>
-                    """)
-
-                    cancer_type = gr.Dropdown(
-                        choices=list(cancer_mapping.keys()),
-                        label="Cancer type",
-                        value="Bladder"
-                    )
-                    gr.HTML("""
-                    <div class="input-description">
-                        Select one of the 16 cancer types represented
-                        in the research dataset.
-                    </div>
-                    """)
-
-            predict_button = gr.Button(
-                "Generate model output",
-                variant="primary",
-                size="lg"
-            )
-
-            prediction_output = gr.HTML(
-                value="""
-                <div class="result-panel">
-                    <div class="result-eyebrow">READY TO EXPLORE</div>
-                    <h2 class="result-heading">Your results will appear here</h2>
-                    <p class="result-description">
-                        Enter the example variables and select
-                        Generate model output.
-                    </p>
-                </div>
-                """
-            )
-
-            predict_button.click(
-                fn=predict_response,
-                inputs=[
-                    tmb,
-                    therapy,
-                    albumin,
-                    nlr,
-                    age,
-                    cancer_type
-                ],
-                outputs=prediction_output
-            )
-
-        with gr.Tab("Research & methodology"):
-
             gr.HTML("""
-            <div class="section-heading">The research behind the model</div>
-            <div class="section-subtitle">
-                ImmunoPredict is based on the Chowell research dataset,
-                which brings together clinical and biological information
-                from patients treated with immune checkpoint blockade.
+            <div class="info-card">
+                <h3>The objective</h3>
+                <p>
+                    To demonstrate how machine learning can
+                    explore relationships in research datasets
+                    and produce interpretable classification outputs.
+                </p>
             </div>
             """)
 
-            gr.Markdown("""
-            ### 1. The dataset
+        gr.Markdown("""
+        ### Explore the model
 
-            The project uses the Chowell training and test datasets.
-            These contain patient-level variables, cancer-type information
-            and recorded treatment-response outcomes.
+        The predictor allows you to enter example values for five
+        research variables and a cancer type. It then displays the
+        model's estimated probabilities for the two outcome classes.
 
-            The model was trained using the training dataset and evaluated
-            against a separate test dataset.
+        **This is a research demonstration, not a medical decision tool.**
+        """)
 
-            ### 2. The machine learning approach
+    explore_panel = gr.Column(visible=False, elem_id="panel-explore")
+    with explore_panel:
 
-            The selected model is **logistic regression**, a supervised
-            machine learning algorithm used for classification.
+        gr.HTML("""
+        <div class="section-heading">Explore a prediction</div>
+        <div class="section-subtitle">
+            Enter example values below to see how the trained model
+            classifies a sample. The descriptions explain each variable.
+        </div>
+        """)
 
-            It estimates the probability of an observation belonging to
-            a particular outcome class based on the input variables.
+        with gr.Row():
 
-            ### 3. Model performance
+            with gr.Column():
 
-            The model achieved the following results on the held-out test set:
+                tmb = gr.Number(
+                    label="Tumour mutational burden (TMB)",
+                    value=32.5
+                )
+                gr.HTML("""
+                <div class="input-description">
+                    The number of mutations per megabase of tumour DNA.
+                    TMB is studied as a possible indicator of how visible
+                    a tumour may be to the immune system.
+                </div>
+                """)
 
-            | Evaluation metric | Result |
-            |---|---:|
-            | Accuracy | 69.7% |
-            | ROC-AUC | 0.760 |
-            | Precision | 42.7% |
-            | Recall | 66.9% |
-            | F1 score | 0.521 |
+                therapy = gr.Radio(
+                    choices=[
+                        ("Yes — previous systemic therapy", 1),
+                        ("No — no previous systemic therapy", 0)
+                    ],
+                    label="Previous systemic therapy",
+                    value=1
+                )
+                gr.HTML("""
+                <div class="input-description">
+                    Indicates whether the patient had received previous
+                    systemic cancer treatment. This can include different
+                    types of drug-based treatment.
+                </div>
+                """)
 
-            These metrics describe performance on this particular dataset.
-            They do not establish clinical usefulness.
+                albumin = gr.Number(
+                    label="Albumin (g/dL)",
+                    value=4.3
+                )
+                gr.HTML("""
+                <div class="input-description">
+                    Albumin is a protein found in blood plasma. Its level
+                    can be associated with general health and inflammation.
+                </div>
+                """)
 
-            ### 4. Important limitations
+            with gr.Column():
 
-            - The dataset is limited to the patients and treatments represented
-              in the original research.
-            - The model has not been clinically validated.
-            - Its predictions may not generalise to other hospitals,
-              populations or treatment settings.
-            - Accuracy is lower than the 75.3% majority-class baseline
-              on the test set.
-            - A probability generated by the model is not a guarantee
-              of an individual patient's treatment outcome.
+                nlr = gr.Number(
+                    label="Neutrophil-to-lymphocyte ratio (NLR)",
+                    value=1.19
+                )
+                gr.HTML("""
+                <div class="input-description">
+                    The ratio of two types of white blood cells.
+                    NLR is studied as a possible marker of systemic
+                    inflammation and immune activity.
+                </div>
+                """)
 
-            ### 5. Why this matters
+                age = gr.Number(
+                    label="Age (years)",
+                    value=67.9
+                )
+                gr.HTML("""
+                <div class="input-description">
+                    Age of the example patient, expressed in years.
+                </div>
+                """)
 
-            Machine learning may help researchers investigate complex
-            relationships between tumour characteristics, patient
-            variables and treatment outcomes.
+                cancer_type = gr.Dropdown(
+                    choices=list(cancer_mapping.keys()),
+                    label="Cancer type",
+                    value="Bladder"
+                )
+                gr.HTML("""
+                <div class="input-description">
+                    Select one of the 16 cancer types represented
+                    in the research dataset.
+                </div>
+                """)
 
-            However, a model's performance must be assessed carefully
-            before it can be considered for real-world clinical use.
+        predict_button = gr.Button(
+            "Generate model output",
+            variant="primary",
+            size="lg"
+        )
 
-            ---
+        prediction_output = gr.HTML(
+            value="""
+            <div class="result-panel">
+                <div class="result-eyebrow">READY TO EXPLORE</div>
+                <h2 class="result-heading">Your results will appear here</h2>
+                <p class="result-description">
+                    Enter the example variables and select
+                    Generate model output.
+                </p>
+            </div>
+            """
+        )
 
-            **Project note:** ImmunoPredict is a replication project
-            inspired by the LORIS framework. It reproduces a selected
-            machine-learning workflow using the publicly available
-            Chowell dataset. AI tools assisted with coding and development.
+        predict_button.click(
+            fn=predict_response,
+            inputs=[
+                tmb,
+                therapy,
+                albumin,
+                nlr,
+                age,
+                cancer_type
+            ],
+            outputs=prediction_output
+        )
 
-            **Educational prototype only. Not for diagnosis or treatment decisions.**
-            """)
+    research_panel = gr.Column(visible=False, elem_id="panel-research")
+    with research_panel:
+
+        gr.HTML("""
+        <div class="section-heading">The research behind the model</div>
+        <div class="section-subtitle">
+            ImmunoPredict is based on the Chowell research dataset,
+            which brings together clinical and biological information
+            from patients treated with immune checkpoint blockade.
+        </div>
+        """)
+
+        gr.Markdown("""
+        ### 1. The dataset
+
+        The project uses the Chowell training and test datasets.
+        These contain patient-level variables, cancer-type information
+        and recorded treatment-response outcomes.
+
+        The model was trained using the training dataset and evaluated
+        against a separate test dataset.
+
+        ### 2. The machine learning approach
+
+        The selected model is **logistic regression**, a supervised
+        machine learning algorithm used for classification.
+
+        It estimates the probability of an observation belonging to
+        a particular outcome class based on the input variables.
+
+        ### 3. Model performance
+
+        The model achieved the following results on the held-out test set:
+
+        | Evaluation metric | Result |
+        |---|---:|
+        | Accuracy | 69.7% |
+        | ROC-AUC | 0.760 |
+        | Precision | 42.7% |
+        | Recall | 66.9% |
+        | F1 score | 0.521 |
+
+        These metrics describe performance on this particular dataset.
+        They do not establish clinical usefulness.
+
+        ### 4. Important limitations
+
+        - The dataset is limited to the patients and treatments represented
+          in the original research.
+        - The model has not been clinically validated.
+        - Its predictions may not generalise to other hospitals,
+          populations or treatment settings.
+        - Accuracy is lower than the 75.3% majority-class baseline
+          on the test set.
+        - A probability generated by the model is not a guarantee
+          of an individual patient's treatment outcome.
+
+        ### 5. Why this matters
+
+        Machine learning may help researchers investigate complex
+        relationships between tumour characteristics, patient
+        variables and treatment outcomes.
+
+        However, a model's performance must be assessed carefully
+        before it can be considered for real-world clinical use.
+
+        ---
+
+        **Project note:** ImmunoPredict is a replication project
+        inspired by the LORIS framework. It reproduces a selected
+        machine-learning workflow using the publicly available
+        Chowell dataset. AI tools assisted with coding and development.
+
+        **Educational prototype only. Not for diagnosis or treatment decisions.**
+        """)
+
+    # Switch visible content panels when a navigation button is selected.
+    overview_button.click(
+        fn=lambda: (gr.update(visible=True), gr.update(visible=False), gr.update(visible=False)),
+        outputs=[overview_panel, explore_panel, research_panel]
+    )
+    explore_button.click(
+        fn=lambda: (gr.update(visible=False), gr.update(visible=True), gr.update(visible=False)),
+        outputs=[overview_panel, explore_panel, research_panel]
+    )
+    research_button.click(
+        fn=lambda: (gr.update(visible=False), gr.update(visible=False), gr.update(visible=True)),
+        outputs=[overview_panel, explore_panel, research_panel]
+    )
 
     gr.Markdown("""
     ---
@@ -749,3 +755,4 @@ demo.launch(
     server_name="0.0.0.0",
     server_port=int(os.environ.get("PORT", 10000))
 )
+
