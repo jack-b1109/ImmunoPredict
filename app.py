@@ -411,25 +411,41 @@ footer {
         font-size: 16px !important;
     }
 
-    /* Show all three tabs on phones without the three-dot overflow menu */
-    .tab-nav {
+    /* Keep every tab in one horizontally scrollable navigation strip.
+       Gradio can hide tabs in its overflow menu on narrow screens, so
+       explicitly show the tab buttons and hide that menu control. */
+    #main-tabs .tab-nav {
         display: flex !important;
         flex-wrap: nowrap !important;
+        justify-content: flex-start !important;
         width: 100% !important;
         max-width: 100% !important;
-        overflow: visible !important;
-        gap: 4px !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+        white-space: nowrap !important;
+        gap: 6px !important;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
     }
-    .tab-nav button {
-        flex: 1 1 0 !important;
-        min-width: 0 !important;
+    #main-tabs .tab-nav button,
+    #main-tabs .tab-nav button[hidden],
+    #main-tabs .tab-nav button[style*="display: none"] {
+        display: inline-flex !important;
+        flex: 0 0 auto !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        width: auto !important;
+        min-width: max-content !important;
         max-width: none !important;
-        padding: 9px 5px !important;
-        font-size: 11px !important;
+        padding: 9px 10px !important;
+        font-size: 12px !important;
         line-height: 1.25 !important;
-        white-space: normal !important;
-        overflow-wrap: anywhere !important;
-        text-align: center !important;
+        white-space: nowrap !important;
+    }
+    #main-tabs .tab-nav .overflow-menu,
+    #main-tabs .tab-nav [aria-label*="More"],
+    #main-tabs .tab-nav [aria-label*="more"] {
+        display: none !important;
     }
 }
 """
@@ -462,7 +478,7 @@ with gr.Blocks(
     </div>
     """)
 
-    with gr.Tabs():
+    with gr.Tabs(elem_id="main-tabs"):
 
         with gr.Tab("Overview"):
 
