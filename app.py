@@ -310,7 +310,6 @@ h1, h2, h3 {
     border-radius: 10px;
 }
 
-/* Threshold information: cool blue palette for clear contrast */
 .threshold-note {
     background: #EAF2F8;
     border: 1px solid #C9DCEB;
@@ -327,7 +326,6 @@ h1, h2, h3 {
     color: var(--muted);
 }
 
-/* Disclaimer: neutral slate palette, visually distinct from the threshold box */
 .disclaimer {
     background: #F1F3F5;
     border: 1px solid #D7DEE5;
@@ -352,8 +350,28 @@ footer {
     display: none !important;
 }
 
+/* Navigation buttons: equal width and consistent sizing */
+#section-nav {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    gap: 8px !important;
+    width: 100% !important;
+}
+
+#section-nav button {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    width: 0 !important;
+    min-height: 48px !important;
+    padding: 10px 8px !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    text-align: center !important;
+    border-radius: 10px !important;
+}
+
 @media (max-width: 650px) {
-    /* Use the available screen width and prevent sideways scrolling */
     .gradio-container {
         padding-left: 12px !important;
         padding-right: 12px !important;
@@ -361,13 +379,13 @@ footer {
         overflow-x: hidden !important;
     }
 
-    /* Stack only the three overview cards; keep other layouts compact */
     #overview-cards {
         display: flex !important;
         flex-direction: column !important;
         flex-wrap: nowrap !important;
         gap: 12px !important;
     }
+
     #overview-cards > * {
         width: 100% !important;
         min-width: 0 !important;
@@ -380,9 +398,11 @@ footer {
         margin-right: 0;
         border-radius: 16px;
     }
+
     #hero h1 {
         font-size: clamp(28px, 8vw, 33px);
     }
+
     #hero p {
         font-size: 14px;
     }
@@ -394,43 +414,35 @@ footer {
     .result-panel {
         padding: 18px;
     }
+
     .result-heading {
         font-size: 26px;
     }
+
     .probability-grid {
         grid-template-columns: 1fr;
         gap: 10px;
     }
 
-    /* Make controls easier to tap */
     .gradio-container button {
         min-height: 44px !important;
     }
+
     .gradio-container input,
     .gradio-container textarea {
         font-size: 16px !important;
     }
 
-    /* Three custom navigation buttons always share the phone width. */
     #section-nav {
-        display: flex !important;
-        flex-direction: row !important;
-        flex-wrap: nowrap !important;
         gap: 6px !important;
-        width: 100% !important;
-    }
-    #section-nav button {
-        flex: 1 1 0 !important;
-        min-width: 0 !important;
-        width: 0 !important;
-        padding: 9px 4px !important;
-        font-size: 10px !important;
-        line-height: 1.25 !important;
-        white-space: normal !important;
-        overflow-wrap: anywhere !important;
-        text-align: center !important;
     }
 
+    #section-nav button {
+        min-height: 48px !important;
+        padding: 8px 4px !important;
+        font-size: 10px !important;
+        line-height: 1.25 !important;
+    }
 }
 """
 
@@ -470,7 +482,6 @@ with gr.Blocks(
 
     overview_panel = gr.Column(visible=True, elem_id="panel-overview")
     with overview_panel:
-
 
         gr.HTML("""
         <div class="section-heading">Understanding the project</div>
@@ -725,18 +736,62 @@ with gr.Blocks(
         **Educational prototype only. Not for diagnosis or treatment decisions.**
         """)
 
-    # Switch visible content panels when a navigation button is selected.
+    # Switch panels and update the selected navigation button.
     overview_button.click(
-        fn=lambda: (gr.update(visible=True), gr.update(visible=False), gr.update(visible=False)),
-        outputs=[overview_panel, explore_panel, research_panel]
+        fn=lambda: (
+            gr.update(visible=True),
+            gr.update(visible=False),
+            gr.update(visible=False),
+            gr.update(variant="primary"),
+            gr.update(variant="secondary"),
+            gr.update(variant="secondary")
+        ),
+        outputs=[
+            overview_panel,
+            explore_panel,
+            research_panel,
+            overview_button,
+            explore_button,
+            research_button
+        ]
     )
+
     explore_button.click(
-        fn=lambda: (gr.update(visible=False), gr.update(visible=True), gr.update(visible=False)),
-        outputs=[overview_panel, explore_panel, research_panel]
+        fn=lambda: (
+            gr.update(visible=False),
+            gr.update(visible=True),
+            gr.update(visible=False),
+            gr.update(variant="secondary"),
+            gr.update(variant="primary"),
+            gr.update(variant="secondary")
+        ),
+        outputs=[
+            overview_panel,
+            explore_panel,
+            research_panel,
+            overview_button,
+            explore_button,
+            research_button
+        ]
     )
+
     research_button.click(
-        fn=lambda: (gr.update(visible=False), gr.update(visible=False), gr.update(visible=True)),
-        outputs=[overview_panel, explore_panel, research_panel]
+        fn=lambda: (
+            gr.update(visible=False),
+            gr.update(visible=False),
+            gr.update(visible=True),
+            gr.update(variant="secondary"),
+            gr.update(variant="secondary"),
+            gr.update(variant="primary")
+        ),
+        outputs=[
+            overview_panel,
+            explore_panel,
+            research_panel,
+            overview_button,
+            explore_button,
+            research_button
+        ]
     )
 
     gr.Markdown("""
@@ -755,4 +810,3 @@ demo.launch(
     server_name="0.0.0.0",
     server_port=int(os.environ.get("PORT", 10000))
 )
-
